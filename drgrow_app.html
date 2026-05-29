@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Dr. Grow</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-tap-highlight-color:transparent;}
+:root{--t:#0D2B3E;--m:#28C9BA;--o:#FF6019;--bg:#F2F5F8;--tx:#154359;--g:#888;--bd:#EEF2F7;}
+body{background:#9eadb8;display:flex;justify-content:center;min-height:100vh;padding:16px;}
+.phone{width:390px;height:844px;background:var(--bg);border-radius:44px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.35);position:relative;border:2px solid #1a1a1a;flex-shrink:0;}
+.scr{display:none;flex-direction:column;position:absolute;inset:0;background:var(--bg);overflow:hidden;}
+.scr.on{display:flex;}
+.sb{background:var(--t);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;}
+.sb span{color:#fff;font-size:13px;font-weight:500;}
+.bdy{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.nav{background:#fff;border-top:1px solid #eee;padding:6px 0 10px;display:flex;align-items:flex-start;flex-shrink:0;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;cursor:pointer;padding:2px 0;user-select:none;}
+.nl{font-size:10px;color:#999;text-align:center;line-height:1.3;margin-top:2px;}
+.nl.a{color:var(--tx);font-weight:700;}
+.fab{width:56px;height:56px;border-radius:50%;background:var(--o);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(255,96,25,.5);margin-top:-18px;cursor:pointer;border:3px solid #fff;flex-shrink:0;transition:transform .15s;}
+.fab:active{transform:scale(.93);}
+.bor{width:100%;background:var(--o);border:none;border-radius:16px;padding:16px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(255,96,25,.3);}
+.bor:active{opacity:.85;}
+.bm{width:100%;background:var(--m);border:none;border-radius:16px;padding:16px;color:var(--t);font-size:15px;font-weight:700;cursor:pointer;}
+.bdis{width:100%;background:#E2E8F0;border:none;border-radius:16px;padding:16px;color:#aaa;font-size:15px;font-weight:700;cursor:not-allowed;}
+.card{background:#fff;border-radius:18px;margin-bottom:14px;border:1px solid var(--bd);}
+.cp{padding:16px 18px;}
+.fld{background:#fff;border-radius:14px;border:1.5px solid #E2E8F0;padding:14px 16px;margin-bottom:14px;transition:border-color .2s;}
+.fld.ok{border-color:var(--m);}
+.flb{font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.fi{width:100%;border:none;outline:none;font-size:16px;font-weight:600;color:var(--tx);background:transparent;}
+.fi::placeholder{color:#ccc;font-weight:400;font-size:14px;}
+.eb{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.ebt{flex:1;height:9px;background:#F0F4F8;border-radius:10px;overflow:hidden;}
+.ebf{height:100%;border-radius:10px;transition:width .6s ease;}
+.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#EEF2F7;border-radius:12px;overflow:hidden;}
+.sc{background:#F8FAFC;padding:11px 6px 9px;text-align:center;}
+.sv{font-size:15px;font-weight:800;line-height:1.2;}
+.sl{font-size:10px;color:#888;margin-top:3px;}
+.tog{width:64px;height:34px;border-radius:17px;display:flex;align-items:center;padding:0 4px;cursor:pointer;transition:background .25s;position:relative;flex-shrink:0;}
+.tgt{width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transition:transform .25s;}
+.tgl{position:absolute;font-size:10px;font-weight:800;pointer-events:none;}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;}
+.pm{background:rgba(40,201,186,.12);border:1px solid var(--m);color:var(--m);}
+.pg{background:#F5F5F5;border:1px solid #ddd;color:#888;}
+.po{background:rgba(255,96,25,.1);border:1px solid var(--o);color:var(--o);}
+.aef{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:14px 16px;margin-bottom:12px;}
+.aei{flex:1;background:#F5F7FA;border:1.5px solid #E2E8F0;border-radius:12px;padding:10px 12px;}
+.aei label{display:block;font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.aei input{width:100%;border:none;background:transparent;font-size:14px;font-weight:600;color:var(--tx);outline:none;}
+.aei input::placeholder{color:#ccc;font-size:12px;}
+.rr{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#F8FAFA;border-radius:13px;margin-bottom:8px;}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:.5px solid #F5F7FA;}
+.prow:last-child{border-bottom:none;}
+.fabmenu{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:10px;align-items:center;z-index:50;opacity:0;pointer-events:none;transition:all .25s;}
+.fabmenu.open{opacity:1;pointer-events:all;}
+.fabopt{background:#fff;border-radius:20px;padding:12px 24px;box-shadow:0 8px 28px rgba(0,0,0,.18);display:flex;align-items:center;gap:12px;cursor:pointer;white-space:nowrap;border:1.5px solid var(--bd);min-width:200px;transition:transform .15s;}
+.fabopt:active{transform:scale(.97);}
+.faboverlay{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:40;display:none;}
+.faboverlay.open{display:block;}
+.modal{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;justify-content:center;}
+.modal.show{display:flex;}
+.mbox{background:#fff;border-radius:28px 28px 0 0;padding:24px 24px 40px;width:100%;animation:su .3s ease;}
+@keyframes su{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.toast{position:absolute;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--m);color:var(--t);font-size:13px;font-weight:700;padding:12px 24px;border-radius:24px;box-shadow:0 4px 20px rgba(40,201,186,.5);z-index:9999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.sum6{display:grid;grid-template-columns:repeat(6,1fr);background:rgba(255,255,255,.08);border-radius:13px;overflow:hidden;border:.5px solid rgba(255,255,255,.12);}
+.s6c{text-align:center;padding:9px 2px;border-right:.5px solid rgba(255,255,255,.1);}
+.s6c:last-child{border-right:none;}
+.cd-section{background:#fff;border-radius:18px;border:1px solid var(--bd);margin-bottom:18px;overflow:hidden;}
+.cd-sec-head{background:var(--t);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;}
+.saved-badge{display:inline-flex;align-items:center;gap:4px;background:#E8F7F5;border:1px solid var(--m);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;color:var(--m);}
+/* per-category date pill inside add entry */
+.cat-date-btn{display:flex;align-items:center;gap:5px;background:#F0FAFA;border:1px solid var(--m);border-radius:20px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--m);cursor:pointer;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+
+<!-- LOGIN -->
+<div id="sLogin" class="scr on">
+  <div class="sb"><span>9:41</span><span>•••</span></div>
+  <div style="background:var(--t);padding:20px 24px 0;display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:12px;width:100%;margin-bottom:20px;">
+      <div style="width:44px;height:44px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;"><span style="font-size:12px;font-weight:800;color:var(--t);">Dr.G</span></div>
+      <div><p style="font-size:18px;font-weight:800;color:#fff;">Dr. Grow</p><p style="font-size:11px;color:var(--m);">by Aquaconnect</p></div>
+      <div style="margin-left:auto;display:flex;background:rgba(255,255,255,.12);border-radius:22px;overflow:hidden;border:.5px solid rgba(255,255,255,.2);">
+        <div id="l_en" onclick="setLang('en')" style="background:var(--m);padding:6px 12px;border-radius:22px;cursor:pointer;"><span style="font-size:12px;font-weight:700;color:var(--t);">EN</span></div>
+        <div id="l_te" onclick="setLang('te')" style="padding:6px 12px;cursor:pointer;"><span style="font-size:12px;color:rgba(255,255,255,.6);">తె</span></div>
+        <div id="l_gu" onclick="setLang('gu')" style="padding:6px 12px;cursor:pointer;"><span style="font-size:12px;color:rgba(255,255,255,.6);">ગુ</span></div>
+      </div>
+    </div>
+    <div style="width:124px;height:124px;border-radius:50%;background:var(--o);border:4px solid var(--m);display:flex;align-items:center;justify-content:center;font-size:64px;">👨‍⚕️</div>
+  </div>
+  <div style="background:#fff;border-radius:32px 32px 0 0;flex:1;padding:22px 24px 0;overflow-y:auto;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:56px;height:56px;background:#E8F7F5;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;">🦐</div><span style="font-size:11px;color:var(--g);">Pond</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:56px;height:56px;background:#F3EEF8;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;">💊</div><span style="font-size:11px;color:var(--g);">Medicine</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:56px;height:56px;background:#FFF8E8;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;">🌾</div><span style="font-size:11px;color:var(--g);">Feed</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:56px;height:56px;background:#EAF2FB;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;">📊</div><span style="font-size:11px;color:var(--g);">Expense</span></div>
+    </div>
+    <p style="font-size:20px;font-weight:800;color:var(--tx);text-align:center;margin-bottom:4px;">Track farm expenses</p>
+    <p style="font-size:14px;color:var(--g);text-align:center;margin-bottom:20px;">at your fingertips</p>
+    <div style="display:flex;background:#F5F7FA;border:1.5px solid #E2E8F0;border-radius:14px;overflow:hidden;margin-bottom:14px;">
+      <div style="padding:15px 16px;background:#E8EDF2;display:flex;align-items:center;gap:6px;border-right:1px solid #ddd;"><span style="font-size:14px;">🇮🇳</span><span style="font-size:14px;font-weight:600;color:var(--tx);">+91</span></div>
+      <input id="lMob" type="tel" placeholder="Mobile number" style="flex:1;border:none;background:transparent;padding:15px 16px;font-size:15px;outline:none;color:var(--tx);" oninput="lCheck()">
+    </div>
+    <button id="btnOTP" class="bdis" disabled onclick="sendOTP()" style="margin-bottom:14px;">Get OTP</button>
+    <div id="otpBox" style="display:none;">
+      <p style="font-size:12px;color:var(--m);text-align:center;margin-bottom:12px;font-weight:600;">✓ OTP sent</p>
+      <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px;">
+        <input id="o1" maxlength="1" oninput="oMv(this,'o2')" style="width:56px;height:56px;border-radius:14px;border:2px solid #E2E8F0;text-align:center;font-size:22px;font-weight:700;color:var(--tx);background:#F5F7FA;outline:none;">
+        <input id="o2" maxlength="1" oninput="oMv(this,'o3')" style="width:56px;height:56px;border-radius:14px;border:2px solid #E2E8F0;text-align:center;font-size:22px;font-weight:700;color:var(--tx);background:#F5F7FA;outline:none;">
+        <input id="o3" maxlength="1" oninput="oMv(this,'o4')" style="width:56px;height:56px;border-radius:14px;border:2px solid #E2E8F0;text-align:center;font-size:22px;font-weight:700;color:var(--tx);background:#F5F7FA;outline:none;">
+        <input id="o4" maxlength="1" oninput="oFull()" style="width:56px;height:56px;border-radius:14px;border:2px solid #E2E8F0;text-align:center;font-size:22px;font-weight:700;color:var(--tx);background:#F5F7FA;outline:none;">
+      </div>
+      <button id="btnLogin" class="bdis" disabled onclick="doLogin()" style="margin-bottom:12px;">Login →</button>
+    </div>
+    <p style="font-size:12px;color:#bbb;text-align:center;padding-bottom:20px;">By continuing, you agree to our Terms & Privacy</p>
+  </div>
+</div>
+
+<!-- FARM SETUP -->
+<div id="sFarmSetup" class="scr">
+  <div class="sb"><span>9:41</span><span>•••</span></div>
+  <div style="background:var(--t);padding:16px 22px 20px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--o);border:2.5px solid var(--m);display:flex;align-items:center;justify-content:center;font-size:26px;">👨‍⚕️</div>
+      <div><p style="font-size:18px;font-weight:800;color:#fff;">Farm Setup</p><p style="font-size:12px;color:rgba(255,255,255,.5);">Complete your profile to get started</p></div>
+    </div>
+    <div style="display:flex;align-items:center;">
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--m);color:var(--t);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;">1</div>
+      <div style="flex:1;height:3px;background:rgba(255,255,255,.2);border-radius:2px;"></div>
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);color:rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;">2</div>
+      <div style="flex:1;height:3px;background:rgba(255,255,255,.2);border-radius:2px;"></div>
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);color:rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;">3</div>
+      <span style="font-size:12px;color:rgba(255,255,255,.5);margin-left:10px;">Step 1 of 3</span>
+    </div>
+  </div>
+  <div class="bdy" style="padding:20px 20px 0;">
+    <div class="fld" id="fsNB"><div class="flb">👤 Farmer Name</div><input class="fi" id="fsN" type="text" placeholder="Enter full name" oninput="fsChk()"></div>
+    <div class="fld" style="background:#F0FAFA;border-color:var(--m);">
+      <div class="flb">📞 Contact Number<span style="margin-left:auto;font-size:10px;background:#E8F7F5;color:var(--m);border-radius:20px;padding:2px 8px;font-weight:600;text-transform:none;">Auto-detect</span></div>
+      <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:14px;">🇮🇳</span><span style="font-size:14px;font-weight:600;color:var(--tx);">+91</span><div style="width:1px;height:18px;background:var(--m);opacity:.3;"></div><span id="fsPhone" style="font-size:15px;font-weight:700;color:var(--tx);">—</span><span style="margin-left:auto;font-size:16px;">🔒</span></div>
+    </div>
+    <div class="fld" id="fsLB"><div class="flb">📍 Location</div><div style="display:flex;gap:10px;"><input class="fi" id="fsL" type="text" placeholder="Village / District" style="flex:1;" oninput="fsChk()"><div onclick="getGPS()" style="width:44px;height:44px;background:var(--t);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;cursor:pointer;">📍</div></div></div>
+    <div class="fld"><div class="flb">🦐 No. of Ponds</div><div style="display:flex;align-items:center;background:#F5F7FA;border-radius:12px;overflow:hidden;"><button onclick="chP(-1)" style="width:54px;height:54px;background:var(--t);border:none;color:#fff;font-size:26px;cursor:pointer;">−</button><span id="fsPN" style="flex:1;text-align:center;font-size:22px;font-weight:800;color:var(--tx);">3</span><button onclick="chP(1)" style="width:54px;height:54px;background:var(--t);border:none;color:var(--m);font-size:26px;cursor:pointer;">+</button></div></div>
+    <button id="fsSv" class="bdis" onclick="doSetup()" style="margin-bottom:20px;" disabled>Save & Continue →</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="sHome" class="scr">
+  <div class="sb"><span>9:41</span><span>•••</span></div>
+  <div style="background:var(--t);padding:14px 20px 18px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div onclick="go('sProfile')" style="width:50px;height:50px;border-radius:50%;background:var(--o);border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;cursor:pointer;">👨‍⚕️</div>
+        <div><p style="font-size:12px;color:rgba(255,255,255,.5);">Good morning 👋</p><p id="hFN" style="font-size:20px;font-weight:800;color:#fff;">My Farm</p><div style="display:flex;align-items:center;gap:4px;margin-top:2px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#28C9BA"/></svg><span id="hLoc" style="font-size:12px;color:var(--m);">Your Location</span></div></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div style="background:rgba(255,255,255,.1);border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div onclick="go('sProfile')" style="background:rgba(255,255,255,.1);border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;"><div class="pill pm"><span style="width:8px;height:8px;border-radius:50%;background:var(--m);display:inline-block;"></span><span id="hAct">0 Active Ponds</span></div><div class="pill pg"><span style="width:8px;height:8px;border-radius:50%;background:#aaa;display:inline-block;"></span><span id="hInact">0 Inactive</span></div><div class="pill po" id="hDOC">DOC: --</div></div>
+  </div>
+  <div class="bdy" style="padding:16px 16px 0;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div class="card cp" style="text-align:center;padding:12px 8px;">
+        <div style="width:36px;height:36px;background:#EAF2FB;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--tx)" stroke-width="2"/><text x="12" y="17" text-anchor="middle" font-size="11" font-weight="700" fill="var(--tx)">₹</text></svg></div>
+        <p id="stExp" style="font-size:15px;font-weight:800;color:#ccc;">--</p>
+        <p style="font-size:9px;color:var(--g);margin-top:3px;">Total Expense</p>
+      </div>
+      <div class="card cp" style="text-align:center;padding:12px 8px;">
+        <div style="width:36px;height:36px;background:#FFF8E8;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:20px;">🌾</div>
+        <p id="stFeedVal" style="font-size:14px;font-weight:800;color:#ccc;">--</p>
+        <p id="stFeedT" style="font-size:10px;color:var(--m);font-weight:600;margin-top:2px;"></p>
+        <p style="font-size:9px;color:var(--g);margin-top:2px;">Feed Purchased</p>
+      </div>
+      <div class="card cp" style="text-align:center;padding:12px 8px;">
+        <div style="width:36px;height:36px;background:#F3EEF8;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:20px;">💊</div>
+        <p id="stHealth" style="font-size:15px;font-weight:800;color:#ccc;">--</p>
+        <p style="font-size:9px;color:var(--g);margin-top:3px;">Healthcare Purchased</p>
+      </div>
+    </div>
+    <div class="card cp" style="margin-bottom:16px;">
+      <p style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:14px;">EXPENSE SPLIT</p>
+      <div class="eb"><div style="width:18px;height:18px;background:#E8F7F5;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;">🌾</div><span style="font-size:13px;color:var(--tx);width:90px;">Feed</span><div class="ebt"><div class="ebf" id="bFeed" style="width:0%;background:var(--t);"></div></div><span id="pFeed" style="font-size:13px;font-weight:700;color:#ccc;width:36px;text-align:right;">--%</span></div>
+      <div class="eb"><div style="width:18px;height:18px;background:#F3EEF8;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;">💊</div><span style="font-size:13px;color:var(--tx);width:90px;">Healthcare</span><div class="ebt"><div class="ebf" id="bHealth" style="width:0%;background:#9B59B6;"></div></div><span id="pHealth" style="font-size:13px;font-weight:700;color:#ccc;width:36px;text-align:right;">--%</span></div>
+      <div class="eb"><div style="width:18px;height:18px;background:#FFF0E8;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;">⛽</div><span style="font-size:13px;color:var(--tx);width:90px;">Diesel</span><div class="ebt"><div class="ebf" id="bDiesel" style="width:0%;background:var(--o);"></div></div><span id="pDiesel" style="font-size:13px;font-weight:700;color:#ccc;width:36px;text-align:right;">--%</span></div>
+      <div class="eb"><div style="width:18px;height:18px;background:#E8F7F5;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;">⚡</div><span style="font-size:13px;color:var(--tx);width:90px;">Electricity</span><div class="ebt"><div class="ebf" id="bElec" style="width:0%;background:var(--m);"></div></div><span id="pElec" style="font-size:13px;font-weight:700;color:#ccc;width:36px;text-align:right;">--%</span></div>
+      <div class="eb" style="margin-bottom:0;"><div style="width:18px;height:18px;background:#FFF8E8;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;">👷</div><span style="font-size:13px;color:var(--tx);width:90px;">Labour</span><div class="ebt"><div class="ebf" id="bLabour" style="width:0%;background:#F39C12;"></div></div><span id="pLabour" style="font-size:13px;font-weight:700;color:#ccc;width:36px;text-align:right;">--%</span></div>
+    </div>
+    <div class="card cp" style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><p style="font-size:15px;font-weight:700;color:var(--tx);">RECENT ENTRIES</p><span onclick="go('sCost')" style="font-size:12px;color:var(--m);font-weight:600;cursor:pointer;">View all →</span></div>
+      <div id="recentList"><div style="text-align:center;padding:20px 0;"><div style="font-size:36px;margin-bottom:8px;">📋</div><p style="font-size:13px;font-weight:600;color:#aaa;">No entries yet</p></div></div>
+    </div>
+  </div>
+  <div class="faboverlay" id="fabOverlay" onclick="closeFAB()"></div>
+  <div class="fabmenu" id="fabMenu">
+    <div class="fabopt" onclick="go('sAddEntry');closeFAB();"><div style="width:40px;height:40px;background:#FFF3E8;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;">💰</div><div><p style="font-size:14px;font-weight:700;color:var(--tx);">Cost Entry</p><p style="font-size:11px;color:#aaa;">Record expenses</p></div></div>
+    <div class="fabopt" onclick="go('sCultureData');closeFAB();"><div style="width:40px;height:40px;background:#E8F7F5;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;">🦐</div><div><p style="font-size:14px;font-weight:700;color:var(--tx);">Culture Data</p><p style="font-size:11px;color:#aaa;">Feed used & growth per pond</p></div></div>
+  </div>
+  <div class="nav">
+    <div class="ni" onclick="go('sHome')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" fill="var(--tx)"/><path d="M9 21V12h6v9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="nl a">Home</span></div>
+    <div class="ni" onclick="go('sCost')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#aaa" stroke-width="1.8"/><path d="M8 8h8M8 12h5" stroke="#aaa" stroke-width="1.5" stroke-linecap="round"/></svg><span class="nl">Cost<br>Tracker</span></div>
+    <div class="ni" style="flex:.7;"><button class="fab" onclick="toggleFAB()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg></button><span class="nl" style="margin-top:4px;color:var(--o);font-weight:700;">Add</span></div>
+    <div class="ni" onclick="go('sFarm')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="13" width="20" height="8" rx="2" fill="var(--m)" opacity=".2"/><path d="M2 13 Q6 8 10 13 Q14 18 18 13 Q20 10.5 22 13" stroke="#aaa" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg><span class="nl">Farm<br>Mgmt</span></div>
+  </div>
+</div>
+
+<!-- ADD ENTRY -->
+<div id="sAddEntry" class="scr">
+  <div class="sb"><span>9:41</span><span>•••</span></div>
+  <div style="background:var(--t);padding:14px 20px 16px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <div onclick="go('sHome')" style="width:34px;height:34px;background:rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      <div><p style="font-size:18px;font-weight:800;color:#fff;">Cost Entry</p><p style="font-size:12px;color:rgba(255,255,255,.5);">Each category has its own date</p></div>
+    </div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;" id="aePills"></div>
+  </div>
+  <div class="bdy" style="padding:14px 16px 0;">
+    <div style="background:#E8F7F5;border:1px solid var(--m);border-radius:14px;padding:10px 14px;margin-bottom:14px;display:flex;gap:10px;"><span style="font-size:18px;">💡</span><p style="font-size:12px;color:var(--tx);line-height:1.6;">Each category has its own date. Empty fields are skipped.</p></div>
+
+    <!-- Feed -->
+    <div class="aef">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;background:#E8F7F5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🌾</div><span style="font-size:15px;font-weight:700;color:var(--tx);">Feed</span></div>
+        <button class="cat-date-btn" onclick="openCatDate('feed')">📅 <span id="feed_dl">Today</span> ✏️</button>
+      </div>
+      <div style="display:flex;gap:8px;"><div class="aei"><label>TONS</label><input id="aFT" type="number" placeholder="e.g. 2.5" min="0"></div><div class="aei"><label>VALUE (₹)</label><input id="aFV" type="number" placeholder="e.g. 18500" min="0"></div></div>
+    </div>
+
+    <!-- Healthcare -->
+    <div class="aef">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;background:#F3EEF8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">💊</div><span style="font-size:15px;font-weight:700;color:var(--tx);">Healthcare</span></div>
+        <button class="cat-date-btn" onclick="openCatDate('health')">📅 <span id="health_dl">Today</span> ✏️</button>
+      </div>
+      <div style="display:flex;gap:8px;"><div class="aei" style="flex:2;"><label>VALUE (₹)</label><input id="aHV" type="number" placeholder="e.g. 6800" min="0"></div></div>
+    </div>
+
+    <!-- Diesel -->
+    <div class="aef">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;background:#FFF0E8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">⛽</div><span style="font-size:15px;font-weight:700;color:var(--tx);">Diesel</span></div>
+        <button class="cat-date-btn" onclick="openCatDate('diesel')">📅 <span id="diesel_dl">Today</span> ✏️</button>
+      </div>
+      <div style="display:flex;gap:8px;"><div class="aei"><label>LITRES</label><input id="aDL" type="number" placeholder="e.g. 50" min="0"></div><div class="aei"><label>VALUE (₹)</label><input id="aDV" type="number" placeholder="e.g. 4200" min="0"></div></div>
+    </div>
+
+    <!-- Electricity -->
+    <div class="aef">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;background:#E8F7F5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">⚡</div><span style="font-size:15px;font-weight:700;color:var(--tx);">Electricity</span></div>
+        <button class="cat-date-btn" onclick="openCatDate('elec')">📅 <span id="elec_dl">Today</span> ✏️</button>
+      </div>
+      <div style="display:flex;gap:8px;"><div class="aei"><label>VALUE (₹)</label><input id="aEV" type="number" placeholder="e.g. 3500" min="0"></div><div class="aei"><label>KWH</label><input id="aEK" type="number" placeholder="e.g. 120" min="0"></div></div>
+    </div>
+
+    <!-- Labour / Maint / Others -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div class="aef" style="padding:12px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px;"><span style="font-size:14px;">👷</span><span style="font-size:12px;font-weight:700;color:var(--tx);">Labour</span></div>
+        <button class="cat-date-btn" onclick="openCatDate('labour')" style="margin-bottom:6px;font-size:10px;padding:3px 8px;">📅 <span id="labour_dl">Today</span></button>
+        <div style="font-size:9px;color:#aaa;margin-bottom:4px;">VALUE (₹)</div>
+        <input id="aLV" type="number" style="width:100%;border:1.5px solid #E2E8F0;border-radius:9px;padding:7px;font-size:13px;font-weight:600;color:var(--tx);outline:none;" placeholder="₹" min="0">
+      </div>
+      <div class="aef" style="padding:12px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px;"><span style="font-size:14px;">🔧</span><span style="font-size:12px;font-weight:700;color:var(--tx);">Maint.</span></div>
+        <button class="cat-date-btn" onclick="openCatDate('maint')" style="margin-bottom:6px;font-size:10px;padding:3px 8px;">📅 <span id="maint_dl">Today</span></button>
+        <div style="font-size:9px;color:#aaa;margin-bottom:4px;">VALUE (₹)</div>
+        <input id="aMV" type="number" style="width:100%;border:1.5px solid #E2E8F0;border-radius:9px;padding:7px;font-size:13px;font-weight:600;color:var(--tx);outline:none;" placeholder="₹" min="0">
+      </div>
+      <div class="aef" style="padding:12px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px;"><span style="font-size:14px;">📦</span><span style="font-size:12px;font-weight:700;color:var(--tx);">Others</span></div>
+        <button class="cat-date-btn" onclick="openCatDate('others')" style="margin-bottom:6px;font-size:10px;padding:3px 8px;">📅 <span id="others_dl">Today</span></button>
+        <div style="font-size:9px;color:#aaa;margin-bottom:4px;">VALUE (₹)</div>
+        <input id="aOV" type="number" style="width:100%;border:1.5px solid #E2E8F0;border-radius:9px;padding:7px;font-size:13px;font-weight:600;color:var(--tx);outline:none;" placeholder="₹" min="0">
+      </div>
+    </div>
+    <button class="bor" onclick="saveEntry()" style="margin-bottom:20px;">💾 Save Entry</button>
+  </div>
+  <div class="nav">
+    <div class="ni" onclick="go('sHome')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" fill="#aaa"/><path d="M9 21V12h6v9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="nl">Home</span></div>
+    <div class="ni" onclick="go('sCost')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#aaa" stroke-width="1.8"/><path d="M8 8h8M8 12h5" stroke="#aaa" stroke-width="1.5" stroke-linecap="round"/></svg><span class="nl">Cost<br>Tracker</span></div>
+    <div class="ni" style="flex:.7;"><button class="fab" onclick="go('sHome');setTimeout(toggleFAB,200)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg></button><span class="nl" style="margin-top:4px;color:var(--o);font-weight:700;">Add</span></div>
+    <div class="ni" onclick="go('sFarm')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="13" width="20" height="8" rx="2" fill="var(--m)" opacity=".2"/><path d="M2 13 Q6 8 10 13 Q14 18 18 13 Q20 10.5 22 13" stroke="#aaa" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg><span class="nl">Farm<br>Mgmt</span></div>
+  </div>
+</div>
+
+<!-- CULTURE DATA -->
+<div id="sCultureData" class="scr">
+  <div class="sb"><span>9:41</span><span>•••</span></div>
+  <div style="background:var(--t);padding:14px 20px 18px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div onclick="go('sHome')" style="width:34px;height:34px;background:rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      <div><p style="font-size:18px;font-weight:800;color:#fff;">Culture Data</p><p id="cdSubtitle" style="font-size:12px;color:rgba(255,255,255,.5);">Feed used &amp; growth per pond</p></div>
+    </div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;" id="cdPondTabs"></div>
+  </div>
+  <div class="bdy" style="padding:16px 14px 0;" id="cdBody"></div>
+  <div class="nav">
+    <div class="ni" onclick="go('sHome')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" fill="#aaa"/><path d="M9 21V12h6v9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="nl">Home</span></div>
+    <div class="ni" onclick="go('sCost')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#aaa" stroke-width="1.8"/><path d="M8 8h8M8 12h5" stroke="#aaa" stroke-width="1.5" stroke-linecap="round"/></svg><span class="nl">Cost<br>Tracker</span></div>
+    <div class="ni" style="flex:.7;"><button class="fab" onclick="go('sHome');setTimeout(toggleFAB,200)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg></button><span class="nl" style="margin-top:4px;color:var(--o);font-weight:700;">Add</span></div>
+    <div class="ni" onclick="go('sFarm')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="13" width="20" height="8" rx="2" fill="var(--m)" opacity=".2"/><path d="M2 13 Q6 8 10 13 Q14 18 18 13 Q20 10.5 22 13" stroke="#aaa" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg><span class="nl">Farm<br>Mgmt</span></div>
+  </div>
+</div>
+
+<!-- COST TRACKER -->
+<div id="sCost" class="scr">
+  <div class="sb"><span>9:41</span><span>•••</span></div>
+  <div style="background:var(--t);padding:14px 20px 18px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <div onclick="go('sHome')" style="width:34px;height:34px;background:rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      <div><p style="font-size:18px;font-weight:800;color:#fff;">Cost Tracker</p><p id="ctRangeLabel" style="font-size:12px;color:rgba(255,255,255,.45);">All entries</p></div>
+      <div onclick="openCTFilter()" style="margin-left:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 14px;cursor:pointer;display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#fff" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span style="font-size:12px;color:#fff;font-weight:600;">Filter</span></div>
+    </div>
+    <div style="display:flex;gap:6px;background:rgba(255,255,255,.08);border-radius:14px;padding:10px 8px;overflow-x:auto;">
+      <div style="text-align:center;padding:0 10px;border-right:.5px solid rgba(255,255,255,.15);flex-shrink:0;"><p id="ctTotal" style="font-size:14px;font-weight:800;color:#ccc;">--</p><p style="font-size:9px;color:rgba(255,255,255,.45);">Total</p></div>
+      <div style="text-align:center;padding:0 10px;border-right:.5px solid rgba(255,255,255,.15);flex-shrink:0;"><p id="ctFeed" style="font-size:14px;font-weight:800;color:#ccc;">--</p><p style="font-size:9px;color:rgba(255,255,255,.45);">Feed</p></div>
+      <div style="text-align:center;padding:0 10px;border-right:.5px solid rgba(255,255,255,.15);flex-shrink:0;"><p id="ctHealth" style="font-size:14px;font-weight:800;color:#ccc;">--</p><p style="font-size:9px;color:rgba(255,255,255,.45);">Healthcare</p></div>
+      <div style="text-align:center;padding:0 10px;border-right:.5px solid rgba(255,255,255,.15);flex-shrink:0;"><p id="ctDiesel" style="font-size:14px;font-weight:800;color:#ccc;">--</p><p style="font-size:9px;color:rgba(255,255,255,.45);">Diesel</p></div>
+      <div style="text-align:center;padding:0 10px;flex-shrink:0;"><p id="ctElec" style="font-size:14px;font-weight:800;color:#ccc;">--</p><p style="font-size:9px;color:rgba(255,255,255,.45);">Electricity</p></div>
+    </div>
+  </div>
+  <div class="bdy" style="padding:14px 16px 0;"><div id="ctList"></div><div style="background:#fff;border:1px solid var(--bd);border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:80px;cursor:pointer;" onclick="go('sAddEntry')"><div style="display:flex;align-items:center;gap:12px;"><div style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--m);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="var(--m)" stroke-width="2.2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="var(--m)" stroke-width="2.2" stroke-linecap="round"/></svg></div><div><p style="font-size:13px;font-weight:700;color:var(--m);">Add More Entry</p><p style="font-size:11px;color:#aaa;">Tap to record new expenses</p></div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="var(--m)" stroke-width="2" stroke-linecap="round"/></svg></div></div>
+  <div class="nav">
+    <div class="ni" onclick="go('sHome')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" fill="#aaa"/><path d="M9 21V12h6v9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="nl">Home</span></div>
+    <div class="ni" onclick="go('sCost')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--tx)" stroke-width="1.8"/><path d="M8 8h8M8 12h5" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round"/></svg><span class="nl a">Cost<br>Tracker</span></div>
+    <div class="ni" style="flex:.7;"><button class="fab" onclick="go('sHome');setTimeout(toggleFAB,200)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg></button><span class="nl" style="margin-top:4px;color:var(--o);font-weight:700;">Add</span></div>
+    <div class="ni" onclick="go('sFarm')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="13" width="20" height="8" rx="2" fill="var(--m)" opacity=".2"/><path d="M2 13 Q6 8 10 13 Q14 18 18 13 Q20 10.5 22 13" stroke="#aaa" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg><span class="nl">Farm<br>Mgmt</span></div>
+  </div>
+</div>
+
+<!-- FARM MANAGEMENT -->
+<div id="sFarm" class="scr">
+  <div class="sb"><span>9:41</span><span>•••</span></div>
+  <div style="background:var(--t);padding:14px 20px 18px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:50px;height:50px;border-radius:50%;background:var(--o);border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">🧑‍🌾</div>
+        <div><p style="font-size:18px;font-weight:800;color:#fff;">Farm Management</p><div style="display:flex;align-items:center;gap:4px;margin-top:3px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="var(--m)"/></svg><span id="fmLoc" style="font-size:12px;color:var(--m);">My Farm</span></div></div>
+      </div>
+      <div onclick="go('sProfile')" style="background:rgba(255,255,255,.1);border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="sum6" id="fmSum"></div>
+  </div>
+  <div class="bdy" style="padding:16px 16px 0;"><div id="farmCards"></div><div onclick="addPond()" style="background:#fff;border:1.5px dashed var(--m);border-radius:18px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:80px;cursor:pointer;"><div style="display:flex;align-items:center;gap:14px;"><div style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--m);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="var(--m)" stroke-width="2.2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="var(--m)" stroke-width="2.2" stroke-linecap="round"/></svg></div><div><p style="font-size:14px;font-weight:700;color:var(--m);">Add More Pond</p><p style="font-size:12px;color:#aaa;">Add another pond to your farm</p></div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="var(--m)" stroke-width="2" stroke-linecap="round"/></svg></div></div>
+  <div class="nav">
+    <div class="ni" onclick="go('sHome')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" fill="#aaa"/><path d="M9 21V12h6v9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="nl">Home</span></div>
+    <div class="ni" onclick="go('sCost')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#aaa" stroke-width="1.8"/><path d="M8 8h8M8 12h5" stroke="#aaa" stroke-width="1.5" stroke-linecap="round"/></svg><span class="nl">Cost<br>Tracker</span></div>
+    <div class="ni" style="flex:.7;"><button class="fab" onclick="go('sHome');setTimeout(toggleFAB,200)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg></button><span class="nl" style="margin-top:4px;color:var(--o);font-weight:700;">Add</span></div>
+    <div class="ni" onclick="go('sFarm')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="13" width="20" height="8" rx="2" fill="var(--m)" opacity=".3"/><path d="M2 13 Q6 8 10 13 Q14 18 18 13 Q20 10.5 22 13" stroke="var(--tx)" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg><span class="nl a">Farm<br>Mgmt</span></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="sProfile" class="scr">
+  <div class="sb"><span>9:41</span><span>•••</span></div>
+  <div style="background:var(--t);padding:20px 24px 24px;flex-shrink:0;text-align:center;">
+    <div onclick="go('sHome')" style="width:34px;height:34px;background:rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:14px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+    <div style="width:80px;height:80px;border-radius:50%;background:var(--o);border:3px solid var(--m);display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 12px;">👨‍⚕️</div>
+    <p id="prName" style="font-size:20px;font-weight:800;color:#fff;">--</p>
+    <p id="prLoc" style="font-size:13px;color:var(--m);margin-top:4px;">📍 --</p>
+    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border-radius:20px;padding:6px 14px;margin-top:10px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--m);"></div><span style="font-size:12px;color:var(--m);font-weight:600;">Active Farmer</span></div>
+  </div>
+  <div class="bdy" style="padding:16px 16px 0;">
+    <div style="background:#fff;border-radius:16px;border:1px solid var(--bd);margin-bottom:14px;overflow:hidden;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #F5F7FA;"><p style="font-size:15px;font-weight:700;color:var(--tx);">🧑‍🌾 Farmer Info</p><button id="btnEF" onclick="toggleEdit()" style="background:#F0FAFA;border:1px solid var(--m);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--m);cursor:pointer;">Edit</button></div>
+      <div id="vFarmer">
+        <div class="prow"><span style="font-size:13px;color:#888;">Name</span><span id="vN" style="font-size:13px;font-weight:600;color:var(--tx);">--</span></div>
+        <div class="prow"><span style="font-size:13px;color:#888;">Mobile</span><span id="vMob" style="font-size:13px;font-weight:600;color:var(--tx);">--</span></div>
+        <div class="prow"><span style="font-size:13px;color:#888;">Location</span><span id="vL" style="font-size:13px;font-weight:600;color:var(--tx);">--</span></div>
+      </div>
+      <div id="eFarmer" style="display:none;padding:14px 18px;">
+        <div class="fld ok"><div class="flb">👤 Name</div><input class="fi" id="eN" type="text"></div>
+        <div class="fld ok"><div class="flb">📍 Location</div><input class="fi" id="eL" type="text"></div>
+        <div style="display:flex;gap:10px;"><button class="bor" onclick="saveFarmer()" style="flex:1;padding:13px;font-size:14px;">Save</button><button onclick="toggleEdit()" style="flex:1;background:#F0F4F8;border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:600;color:#888;cursor:pointer;">Cancel</button></div>
+      </div>
+    </div>
+    <p style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;">🌊 Pond Stocking Data</p>
+    <div id="prPonds"></div>
+    <div style="height:20px;"></div>
+  </div>
+  <div class="nav">
+    <div class="ni" onclick="go('sHome')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" fill="#aaa"/><path d="M9 21V12h6v9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="nl">Home</span></div>
+    <div class="ni" onclick="go('sCost')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#aaa" stroke-width="1.8"/><path d="M8 8h8M8 12h5" stroke="#aaa" stroke-width="1.5" stroke-linecap="round"/></svg><span class="nl">Cost<br>Tracker</span></div>
+    <div class="ni" style="flex:.7;"><button class="fab" onclick="go('sHome');setTimeout(toggleFAB,200)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg></button><span class="nl" style="margin-top:4px;color:var(--o);font-weight:700;">Add</span></div>
+    <div class="ni" onclick="go('sFarm')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="13" width="20" height="8" rx="2" fill="var(--m)" opacity=".2"/><path d="M2 13 Q6 8 10 13 Q14 18 18 13 Q20 10.5 22 13" stroke="#aaa" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg><span class="nl">Farm<br>Mgmt</span></div>
+  </div>
+</div>
+
+<!-- Category Date Modal -->
+<div class="modal" id="catDateMod">
+  <div class="mbox">
+    <p style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:6px;" id="catDateTitle">📅 Select Date</p>
+    <p style="font-size:12px;color:#aaa;margin-bottom:16px;" id="catDateSub">Choose date for this category</p>
+    <input id="catDateInput" type="date" style="width:100%;border:1.5px solid var(--m);border-radius:12px;padding:14px 16px;font-size:15px;font-weight:600;color:var(--tx);outline:none;margin-bottom:16px;">
+    <div style="display:flex;gap:10px;">
+      <button onclick="confirmCatDate()" class="bor" style="flex:1;padding:14px;font-size:14px;">Confirm</button>
+      <button onclick="closeCatDateMod()" style="flex:1;background:#F0F4F8;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:600;color:#888;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cost Tracker Filter Modal -->
+<div class="modal" id="ctFilterMod">
+  <div class="mbox">
+    <p style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:6px;">📅 Filter by Date Range</p>
+    <p style="font-size:12px;color:#aaa;margin-bottom:16px;">Select start and end date to view specific period</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div>
+        <p style="font-size:11px;font-weight:700;color:#aaa;margin-bottom:6px;">FROM</p>
+        <input id="ctFrom" type="date" style="width:100%;border:1.5px solid var(--m);border-radius:12px;padding:12px;font-size:14px;font-weight:600;color:var(--tx);outline:none;">
+      </div>
+      <div>
+        <p style="font-size:11px;font-weight:700;color:#aaa;margin-bottom:6px;">TO</p>
+        <input id="ctTo" type="date" style="width:100%;border:1.5px solid var(--m);border-radius:12px;padding:12px;font-size:14px;font-weight:600;color:var(--tx);outline:none;">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;" id="ctQuickBtns"></div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="applyCTFilter()" class="bor" style="flex:1;padding:14px;font-size:14px;">Apply Filter</button>
+      <button onclick="clearCTFilter()" style="flex:1;background:#F0F4F8;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:600;color:#888;cursor:pointer;">Clear / All</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const POND_COLORS=['#28C9BA','#FF6019','#154359','#9B59B6','#F39C12','#27AE60','#E74C3C','#2980B9'];
+const APP={name:'',loc:'',mobile:''};
+// entries: {cat, val, qty, dateISO:'YYYY-MM-DD', date:'display'}
+const entries=[];
+const totals={feed:0,feedT:0,health:0,diesel:0,dieselL:0,elec:0,elecK:0,labour:0,maint:0,others:0};
+const cultureData={};
+let editPond=-1,cdActivePond=-1,profEditPond=-1;
+let fsPN=3,fabOpen=false;
+
+// Per-category dates for Add Entry
+const catDates={feed:'',health:'',diesel:'',elec:'',labour:'',maint:'',others:''};
+let activeCatKey=null;
+
+// Cost Tracker filter
+let ctFromISO='',ctToISO='';
+
+const ponds=[
+  {name:'Pond 1',acres:'',on:true,rawDate:'',date:'',seeds:'',density:'',doc:0,harvest:''},
+  {name:'Pond 2',acres:'',on:true,rawDate:'',date:'',seeds:'',density:'',doc:0,harvest:''},
+  {name:'Pond 3',acres:'',on:true,rawDate:'',date:'',seeds:'',density:'',doc:0,harvest:''},
+];
+
+// ── UTILS ──
+function fmt(n){if(!n||n===0)return'--';if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(1)+'K';return'₹'+n.toLocaleString('en-IN');}
+function fmtD(s){try{const d=new Date(s);if(isNaN(d))return s;return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return s;}}
+function calcDOC(raw){if(!raw)return 0;const d=Math.floor((new Date()-new Date(raw))/86400000);return d>=0?d:0;}
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function todayShort(){return new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short'});}
+function fmtShort(iso){if(!iso)return'Today';try{return new Date(iso).toLocaleDateString('en-IN',{day:'2-digit',month:'short'});}catch(e){return iso;}}
+function fmtMob(m){if(!m)return'--';const d=m.replace(/\D/g,'').slice(-10);return d.length===10?'+91 '+d.slice(0,5)+' '+d.slice(5):'--';}
+function getCDPond(i){if(!cultureData[i])cultureData[i]={feedLogs:[],growthLogs:[]};return cultureData[i];}
+function pIco(){return`<svg width="24" height="24" viewBox="0 0 48 48" fill="none"><rect x="4" y="28" width="40" height="14" rx="4" fill="#28C9BA" opacity=".2"/><path d="M4 28 Q12 18 20 28 Q28 38 36 28 Q40 23 44 28" stroke="#28C9BA" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M16 22 Q18 14 20 22" stroke="#154359" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M28 18 Q30 10 32 18" stroke="#154359" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>`;}
+
+function toast(msg,cb){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>{t.classList.remove('show');if(cb)setTimeout(cb,300);},2200);}
+function toggleFAB(){fabOpen=!fabOpen;document.getElementById('fabMenu').classList.toggle('open',fabOpen);document.getElementById('fabOverlay').classList.toggle('open',fabOpen);}
+function closeFAB(){fabOpen=false;document.getElementById('fabMenu').classList.remove('open');document.getElementById('fabOverlay').classList.remove('open');}
+
+function go(id){
+  closeFAB();
+  document.querySelectorAll('.scr').forEach(s=>{s.style.display='none';s.classList.remove('on');});
+  const t=document.getElementById(id);t.style.display='flex';t.classList.add('on');
+  if(id==='sHome')refreshHome();
+  if(id==='sFarm')buildFarm();
+  if(id==='sAddEntry')initAE();
+  if(id==='sCost')buildCT();
+  if(id==='sProfile')buildProfile();
+  if(id==='sCultureData'){cdActivePond=-1;buildCD();}
+}
+
+// ── LOGIN ──
+function lCheck(){const v=document.getElementById('lMob').value.replace(/\D/g,'');APP.mobile=v;const btn=document.getElementById('btnOTP');if(v.length>=10){btn.className='bm';btn.disabled=false;}else{btn.className='bdis';btn.disabled=true;}}
+function sendOTP(){document.getElementById('otpBox').style.display='block';document.getElementById('btnOTP').textContent='Resend OTP';document.getElementById('o1').focus();const d=APP.mobile.replace(/\D/g,'').slice(-10);document.getElementById('fsPhone').textContent=d.length===10?d.slice(0,5)+' '+d.slice(5):'—';toast('OTP sent! Enter any 4 digits 😊');}
+function oMv(el,nxt){if(el.value)document.getElementById(nxt).focus();oFull();}
+function oFull(){const v=[1,2,3,4].map(i=>document.getElementById('o'+i).value);const btn=document.getElementById('btnLogin');if(v.every(x=>x)){btn.className='bor';btn.disabled=false;}}
+function doLogin(){go('sFarmSetup');}
+function setLang(l){['en','te','gu'].forEach(x=>{const el=document.getElementById('l_'+x);if(x===l){el.style.background='var(--m)';el.firstElementChild.style.color='var(--t)';}else{el.style.background='transparent';el.firstElementChild.style.color='rgba(255,255,255,.6)';}});}
+
+// ── FARM SETUP ──
+function chP(d){fsPN=Math.max(1,Math.min(20,fsPN+d));document.getElementById('fsPN').textContent=fsPN;fsChk();}
+function fsChk(){const n=document.getElementById('fsN').value.trim(),l=document.getElementById('fsL').value.trim(),btn=document.getElementById('fsSv');document.getElementById('fsNB').className=n?'fld ok':'fld';document.getElementById('fsLB').className=l?'fld ok':'fld';if(n&&l){btn.className='bor';btn.disabled=false;}else{btn.className='bdis';btn.disabled=true;}}
+function getGPS(){toast('📍 Getting location...');setTimeout(()=>{document.getElementById('fsL').value='Bhimavaram, AP';fsChk();toast('✓ Location detected!');},1200);}
+function doSetup(){
+  const n=document.getElementById('fsN').value.trim(),l=document.getElementById('fsL').value.trim();
+  if(!n||!l){toast('⚠️ Please fill all fields');return;}
+  APP.name=n;APP.loc=l;
+  while(ponds.length<fsPN)ponds.push({name:'Pond '+(ponds.length+1),acres:'',on:true,rawDate:'',date:'',seeds:'',density:'',doc:0,harvest:''});
+  ponds.length=fsPN;
+  toast('✓ Profile saved! Welcome '+n+' 🎉',()=>go('sHome'));
+}
+
+// ── HOME ──
+function refreshHome(){
+  document.getElementById('hFN').textContent=APP.name?(APP.name+"'s Farm"):'My Farm';
+  document.getElementById('hLoc').textContent=APP.loc||'Your Location';
+  const a=ponds.filter(p=>p.on).length;
+  document.getElementById('hAct').textContent=a+' Active Pond'+(a===1?'':'s');
+  document.getElementById('hInact').textContent=(ponds.length-a)+' Inactive';
+  const docs=ponds.filter(p=>p.on&&p.doc>0).map(p=>p.doc);
+  document.getElementById('hDOC').textContent=docs.length?'DOC: '+Math.min(...docs):'DOC: --';
+  const totalExp=totals.feed+totals.health+totals.diesel+totals.elec+totals.labour+totals.maint+totals.others;
+  const stE=document.getElementById('stExp');
+  if(totalExp>0){stE.style.color='var(--tx)';stE.textContent=fmt(totalExp);}else{stE.style.color='#ccc';stE.textContent='--';}
+  // Feed card: ₹value + (X.X T) if tons entered
+  const stFV=document.getElementById('stFeedVal'),stFT=document.getElementById('stFeedT');
+  if(totals.feed>0){stFV.style.color='var(--tx)';stFV.textContent=fmt(totals.feed);stFT.textContent=totals.feedT>0?'('+totals.feedT.toFixed(1)+' T)':'';}else{stFV.style.color='#ccc';stFV.textContent='--';stFT.textContent='';}
+  // Healthcare card
+  const stH=document.getElementById('stHealth');
+  if(totals.health>0){stH.style.color='var(--tx)';stH.textContent=fmt(totals.health);}else{stH.style.color='#ccc';stH.textContent='--';}
+  updateSplit(totalExp);renderRecent();
+}
+function updateSplit(total){
+  [{b:'bFeed',p:'pFeed',v:totals.feed},{b:'bHealth',p:'pHealth',v:totals.health},{b:'bDiesel',p:'pDiesel',v:totals.diesel},{b:'bElec',p:'pElec',v:totals.elec},{b:'bLabour',p:'pLabour',v:totals.labour}].forEach(({b,p,v})=>{
+    const pct=total>0?Math.round(v/total*100):0;
+    const be=document.getElementById(b),pe=document.getElementById(p);
+    if(be)be.style.width=pct+'%';
+    if(pe){if(pct>0){pe.textContent=pct+'%';pe.style.color='var(--tx)';}else{pe.textContent='--%';pe.style.color='#ccc';}}
+  });
+}
+const catIco={feed:{ico:'🌾',bg:'#FFF8E8',lbl:'Feed'},health:{ico:'💊',bg:'#F3EEF8',lbl:'Healthcare'},diesel:{ico:'⛽',bg:'#FFF0E8',lbl:'Diesel'},elec:{ico:'⚡',bg:'#E8F7F5',lbl:'Electricity'},labour:{ico:'👷',bg:'#EAF2FB',lbl:'Labour'},maint:{ico:'🔧',bg:'#E8F5E9',lbl:'Maintenance'},others:{ico:'📦',bg:'#F5F5F5',lbl:'Others'}};
+function renderRecent(){
+  const el=document.getElementById('recentList');if(!el)return;
+  if(!entries.length){el.innerHTML='<div style="text-align:center;padding:20px 0;"><div style="font-size:36px;margin-bottom:8px;">📋</div><p style="font-size:13px;font-weight:600;color:#aaa;">No entries yet</p></div>';return;}
+  el.innerHTML=entries.slice(0,4).map(e=>{const c=catIco[e.cat];return`<div class="rr"><div style="display:flex;align-items:center;gap:12px;"><div style="width:38px;height:38px;border-radius:11px;background:${c.bg};display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">${c.ico}</div><div><p style="font-size:14px;font-weight:600;color:var(--tx);">${c.lbl}${e.qty?' – '+e.qty:''}</p><p style="font-size:12px;color:#aaa;">${e.date}</p></div></div><span style="font-size:14px;font-weight:700;color:var(--o);">-${fmt(e.val)}</span></div>`;}).join('');
+}
+
+// ── ADD ENTRY — per-category dates ──
+function initAE(){
+  // Reset all category dates to today
+  Object.keys(catDates).forEach(k=>catDates[k]=todayISO());
+  Object.keys(catDates).forEach(k=>{const el=document.getElementById(k+'_dl');if(el)el.textContent='Today';});
+  const pp=document.getElementById('aePills');
+  pp.innerHTML=`<div style="background:var(--m);border-radius:20px;padding:6px 16px;white-space:nowrap;flex-shrink:0;"><span style="font-size:12px;font-weight:700;color:var(--t);">All Ponds</span></div>`+ponds.map(p=>`<div style="background:rgba(255,255,255,.1);border:.5px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 16px;white-space:nowrap;flex-shrink:0;"><span style="font-size:12px;color:rgba(255,255,255,.6);">${p.name}</span></div>`).join('');
+}
+
+const catNames={feed:'Feed',health:'Healthcare',diesel:'Diesel',elec:'Electricity',labour:'Labour',maint:'Maintenance',others:'Others'};
+function openCatDate(key){
+  activeCatKey=key;
+  document.getElementById('catDateTitle').textContent='📅 '+catNames[key]+' Date';
+  document.getElementById('catDateSub').textContent='Select date for '+catNames[key]+' entry';
+  document.getElementById('catDateInput').value=catDates[key]||todayISO();
+  document.getElementById('catDateMod').classList.add('show');
+}
+function confirmCatDate(){
+  const v=document.getElementById('catDateInput').value;
+  if(v&&activeCatKey){
+    catDates[activeCatKey]=v;
+    const el=document.getElementById(activeCatKey+'_dl');
+    if(el)el.textContent=fmtShort(v);
+  }
+  closeCatDateMod();
+}
+function closeCatDateMod(){document.getElementById('catDateMod').classList.remove('show');activeCatKey=null;}
+
+function saveEntry(){
+  const fT=parseFloat(document.getElementById('aFT').value)||0,
+        fV=parseFloat(document.getElementById('aFV').value)||0,
+        hV=parseFloat(document.getElementById('aHV').value)||0,
+        dL=parseFloat(document.getElementById('aDL').value)||0,
+        dV=parseFloat(document.getElementById('aDV').value)||0,
+        eV=parseFloat(document.getElementById('aEV').value)||0,
+        eK=parseFloat(document.getElementById('aEK').value)||0,
+        lV=parseFloat(document.getElementById('aLV').value)||0,
+        mV=parseFloat(document.getElementById('aMV').value)||0,
+        oV=parseFloat(document.getElementById('aOV').value)||0;
+  if(fV+hV+dV+eV+lV+mV+oV===0){toast('⚠️ Please fill at least one field');return;}
+  // Each category uses its own date
+  const catEntries=[
+    {cat:'feed',val:fV,qty:fT?fT+'T':'',dateISO:catDates.feed},
+    {cat:'health',val:hV,qty:'',dateISO:catDates.health},
+    {cat:'diesel',val:dV,qty:dL?dL+'L':'',dateISO:catDates.diesel},
+    {cat:'elec',val:eV,qty:eK?eK+'kWh':'',dateISO:catDates.elec},
+    {cat:'labour',val:lV,qty:'',dateISO:catDates.labour},
+    {cat:'maint',val:mV,qty:'',dateISO:catDates.maint},
+    {cat:'others',val:oV,qty:'',dateISO:catDates.others},
+  ].filter(e=>e.val>0);
+  catEntries.forEach(e=>{
+    e.date=fmtD(e.dateISO);
+    entries.unshift(e);
+  });
+  if(entries.length>200)entries.length=200;
+  // Update totals
+  totals.feed+=fV;totals.feedT+=fT;totals.health+=hV;
+  totals.diesel+=dV;totals.dieselL+=dL;
+  totals.elec+=eV;totals.elecK+=eK;
+  totals.labour+=lV;totals.maint+=mV;totals.others+=oV;
+  // Clear fields
+  ['aFT','aFV','aHV','aDL','aDV','aEV','aEK','aLV','aMV','aOV'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  toast('✓ Entry saved!',()=>go('sHome'));
+}
+
+// ── CULTURE DATA ──
+function buildCD(){ponds.forEach((_,i)=>getCDPond(i));buildCDTabs();renderCDBody();}
+function buildCDTabs(){
+  const el=document.getElementById('cdPondTabs');if(!el)return;
+  const isAll=cdActivePond===-1;
+  el.innerHTML=`<div onclick="setCDPond(-1)" style="background:${isAll?'var(--m)':'rgba(255,255,255,.1)'};border:${isAll?'none':'.5px solid rgba(255,255,255,.2)'};border-radius:20px;padding:6px 16px;white-space:nowrap;flex-shrink:0;cursor:pointer;"><span style="font-size:12px;font-weight:700;color:${isAll?'var(--t)':'rgba(255,255,255,.6)'};">All Ponds</span></div>`+
+  ponds.map((p,i)=>{const act=cdActivePond===i;return`<div onclick="setCDPond(${i})" style="background:${act?'var(--m)':'rgba(255,255,255,.1)'};border:${act?'none':'.5px solid rgba(255,255,255,.2)'};border-radius:20px;padding:6px 16px;white-space:nowrap;flex-shrink:0;cursor:pointer;"><span style="font-size:12px;font-weight:700;color:${act?'var(--t)':'rgba(255,255,255,.6)'};">${p.name}</span></div>`;}).join('');
+  const sub=document.getElementById('cdSubtitle');
+  if(sub)sub.textContent=cdActivePond===-1?'Feed used & growth per pond':(ponds[cdActivePond]?.name+' • Feed & Growth');
+}
+function setCDPond(i){cdActivePond=i;buildCDTabs();renderCDBody();}
+function renderCDBody(){
+  const el=document.getElementById('cdBody');if(!el)return;
+  const show=cdActivePond===-1?ponds.map((_,i)=>i):[cdActivePond];
+  const totalFeedKg=Object.values(cultureData).reduce((s,d)=>s+d.feedLogs.reduce((a,l)=>a+l.kg,0),0);
+  el.innerHTML=`
+  <div class="cd-section">
+    <div class="cd-sec-head">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">🌾</span><div><p style="font-size:14px;font-weight:800;color:#fff;">Feed</p><p style="font-size:11px;color:rgba(255,255,255,.5);">Cumulative feed used per pond</p></div></div>
+      ${totalFeedKg>0?`<div style="background:rgba(40,201,186,.2);border:1px solid var(--m);border-radius:20px;padding:4px 10px;"><span style="font-size:10px;font-weight:700;color:var(--m);">${totalFeedKg.toLocaleString('en-IN')} kg total</span></div>`:''}
+    </div>
+    ${show.map(i=>{
+      const p=ponds[i],cd=getCDPond(i),cumul=cd.feedLogs.reduce((s,l)=>s+l.kg,0),col=POND_COLORS[i%POND_COLORS.length];
+      return`<div style="border-top:1px solid #F0F4F8;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px;">
+          <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;border-radius:50%;background:${col};flex-shrink:0;"></div><span style="font-size:13px;font-weight:800;color:var(--tx);">${p.name}</span></div>
+          ${cumul>0?`<div style="background:#E8F7F5;border:1px solid var(--m);border-radius:20px;padding:3px 10px;"><span style="font-size:11px;font-weight:700;color:var(--m);">Cumul: ${cumul.toLocaleString('en-IN')} kg</span></div>`:`<span style="font-size:11px;color:#ccc;">No entries yet</span>`}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px 14px 12px;">
+          <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;padding:10px 12px;">
+            <div style="font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;margin-bottom:6px;">📅 DATE</div>
+            <input type="date" id="fd_${i}" value="${todayISO()}" style="width:100%;border:none;background:transparent;font-size:13px;font-weight:700;color:var(--tx);outline:none;">
+          </div>
+          <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;padding:10px 12px;">
+            <div style="font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;margin-bottom:6px;">🌾 FEED (KG)</div>
+            <div style="display:flex;align-items:center;gap:4px;"><input type="number" id="fkg_${i}" placeholder="e.g. 500" min="0" style="flex:1;border:none;background:transparent;font-size:14px;font-weight:700;color:var(--tx);outline:none;"><span style="font-size:12px;color:#aaa;">kg</span></div>
+          </div>
+        </div>
+        ${cd.feedLogs.length?`<div style="margin:0 14px 12px;background:#F0FAFA;border-radius:10px;overflow:hidden;"><div onclick="toggleHist('fh_${i}','fa_${i}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;"><span class="saved-badge">${cd.feedLogs.length} saved</span><svg id="fa_${i}" width="14" height="14" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;"><path d="M6 9l6 6 6-6" stroke="var(--m)" stroke-width="2" stroke-linecap="round"/></svg></div><div id="fh_${i}" style="display:none;border-top:1px solid #E0F5F3;">${cd.feedLogs.map(l=>`<div style="display:flex;justify-content:space-between;padding:6px 12px;border-bottom:.5px solid #E8F7F5;"><span style="font-size:12px;color:#888;">${l.date}</span><span style="font-size:12px;font-weight:700;color:var(--m);">${l.kg.toLocaleString('en-IN')} kg</span></div>`).join('')}</div></div>`:''}
+      </div>`;
+    }).join('')}
+    <div style="padding:10px 14px 14px;"><button class="bor" onclick="saveFeedAll()" style="padding:15px;font-size:15px;border-radius:14px;">💾 Save Feed Entries</button></div>
+  </div>
+  <div class="cd-section" style="margin-top:4px;">
+    <div class="cd-sec-head">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📈</span><div><p style="font-size:14px;font-weight:800;color:#fff;">Growth</p><p style="font-size:11px;color:rgba(255,255,255,.5);">Count/kg & avg gram per pond</p></div></div>
+    </div>
+    ${show.map(i=>{
+      const p=ponds[i],cd=getCDPond(i),col=POND_COLORS[i%POND_COLORS.length],last=cd.growthLogs[0];
+      return`<div style="border-top:1px solid #F0F4F8;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px;">
+          <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;border-radius:50%;background:${col};flex-shrink:0;"></div><span style="font-size:13px;font-weight:800;color:var(--tx);">${p.name}</span></div>
+          ${last?`<div style="display:flex;gap:6px;"><div style="background:#FFF3E0;border:1px solid var(--o);border-radius:20px;padding:3px 8px;"><span style="font-size:10px;font-weight:700;color:var(--o);">${last.count}/kg</span></div><div style="background:#E8F7F5;border:1px solid var(--m);border-radius:20px;padding:3px 8px;"><span style="font-size:10px;font-weight:700;color:var(--m);">${last.avg}g avg</span></div></div>`:`<span style="font-size:11px;color:#ccc;">No entries yet</span>`}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:6px 14px 12px;">
+          <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;padding:9px 10px;">
+            <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;margin-bottom:5px;">📅 DATE</div>
+            <input type="date" id="gd_${i}" value="${todayISO()}" style="width:100%;border:none;background:transparent;font-size:11px;font-weight:700;color:var(--tx);outline:none;">
+          </div>
+          <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;padding:9px 10px;">
+            <div style="font-size:8px;font-weight:700;color:#aaa;text-transform:uppercase;margin-bottom:5px;">COUNT/KG</div>
+            <input type="number" id="gc_${i}" placeholder="e.g. 100" min="0" oninput="onCountInput(${i})" style="width:100%;border:none;background:transparent;font-size:14px;font-weight:700;color:var(--tx);outline:none;">
+          </div>
+          <div style="background:#F8FAFC;border:1.5px solid var(--m);border-radius:12px;padding:9px 10px;">
+            <div style="font-size:8px;font-weight:700;color:var(--m);text-transform:uppercase;margin-bottom:5px;">AVG/GRAM ✦</div>
+            <div style="display:flex;align-items:center;gap:2px;"><input type="number" id="ga_${i}" placeholder="auto" min="0" step="0.1" style="flex:1;border:none;background:transparent;font-size:14px;font-weight:700;color:var(--tx);outline:none;min-width:0;"><span style="font-size:10px;color:#aaa;">g</span></div>
+          </div>
+        </div>
+        ${cd.growthLogs.length?`<div style="margin:0 14px 12px;background:#FFF8F5;border-radius:10px;overflow:hidden;"><div onclick="toggleHist('gh_${i}','ga2_${i}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;"><span class="saved-badge" style="background:rgba(255,96,25,.1);border-color:var(--o);color:var(--o);">${cd.growthLogs.length} saved</span><svg id="ga2_${i}" width="14" height="14" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;"><path d="M6 9l6 6 6-6" stroke="var(--o)" stroke-width="2" stroke-linecap="round"/></svg></div><div id="gh_${i}" style="display:none;border-top:1px solid #FFE8D6;"><div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:4px;padding:5px 12px;background:#FFF3EC;"><span style="font-size:9px;color:#aaa;">Date</span><span style="font-size:9px;color:#aaa;text-align:center;">Count/kg</span><span style="font-size:9px;color:#aaa;text-align:right;">Avg/g</span></div>${cd.growthLogs.map(l=>`<div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:4px;padding:6px 12px;border-bottom:.5px solid #FFE8D6;"><span style="font-size:12px;color:#888;">${l.date}</span><span style="font-size:12px;font-weight:700;color:var(--m);text-align:center;">${l.count}</span><span style="font-size:12px;font-weight:700;color:var(--o);text-align:right;">${l.avg}g</span></div>`).join('')}</div></div>`:''}
+      </div>`;
+    }).join('')}
+    <div style="padding:10px 14px 14px;"><button class="bor" onclick="saveGrowthAll()" style="padding:15px;font-size:15px;border-radius:14px;">💾 Save Growth Entries</button></div>
+  </div>
+  <div style="height:16px;"></div>`;
+}
+function toggleHist(bId,aId){const b=document.getElementById(bId),a=document.getElementById(aId);if(!b)return;const open=b.style.display==='block';b.style.display=open?'none':'block';if(a)a.style.transform=open?'':'rotate(180deg)';}
+function onCountInput(i){
+  const c=parseFloat(document.getElementById('gc_'+i)?.value)||0;if(c<=0)return;
+  let avg=parseFloat((1000/c).toFixed(1));
+  const doc=ponds[i]?.doc||0;
+  if(doc>0){const docEst=parseFloat((doc*0.1).toFixed(1)),w=Math.min(doc/60,1);avg=parseFloat((avg*(1-w)+docEst*w).toFixed(1));}
+  const gaEl=document.getElementById('ga_'+i);if(gaEl)gaEl.value=avg;
+}
+function saveFeedAll(){
+  const show=cdActivePond===-1?ponds.map((_,i)=>i):[cdActivePond];
+  let saved=0;
+  show.forEach(i=>{const d=document.getElementById('fd_'+i)?.value,kg=parseFloat(document.getElementById('fkg_'+i)?.value)||0;if(d&&kg>0){getCDPond(i).feedLogs.unshift({date:fmtD(d),kg});saved++;}});
+  if(saved===0){toast('⚠️ Enter feed kg for at least one pond');return;}
+  renderCDBody();buildFarm();
+  toast(`✓ Feed saved for ${saved} pond${saved>1?'s':''}! Farm updated.`);
+}
+function saveGrowthAll(){
+  const show=cdActivePond===-1?ponds.map((_,i)=>i):[cdActivePond];
+  let saved=0;
+  show.forEach(i=>{
+    const d=document.getElementById('gd_'+i)?.value,countVal=parseFloat(document.getElementById('gc_'+i)?.value)||0;
+    let avgVal=parseFloat(document.getElementById('ga_'+i)?.value)||0;
+    if(countVal>0&&avgVal===0)avgVal=parseFloat((1000/countVal).toFixed(1));
+    if(d&&(countVal>0||avgVal>0)){getCDPond(i).growthLogs.unshift({date:fmtD(d),count:countVal,avg:avgVal});saved++;}
+  });
+  if(saved===0){toast('⚠️ Enter growth data for at least one pond');return;}
+  renderCDBody();buildFarm();
+  toast(`✓ Growth saved for ${saved} pond${saved>1?'s':''}! Farm updated.`);
+}
+
+// ── COST TRACKER — custom date filter ──
+function openCTFilter(){
+  // Populate quick buttons
+  const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  const qb=document.getElementById('ctQuickBtns');
+  const thisMonthFrom=`${y}-${String(m+1).padStart(2,'0')}-01`;
+  const thisMonthTo=new Date(y,m+1,0).toISOString().slice(0,10);
+  const lastMonthFrom=`${m===0?y-1:y}-${String(m===0?12:m).padStart(2,'0')}-01`;
+  const lastMonthTo=new Date(y,m,0).toISOString().slice(0,10);
+  const last7=new Date(now-6*86400000).toISOString().slice(0,10);
+  const last30=new Date(now-29*86400000).toISOString().slice(0,10);
+  const today=now.toISOString().slice(0,10);
+  qb.innerHTML=[
+    {l:'Today',f:today,t:today},
+    {l:'Last 7 days',f:last7,t:today},
+    {l:'Last 30 days',f:last30,t:today},
+    {l:'This Month',f:thisMonthFrom,t:thisMonthTo},
+    {l:'Last Month',f:lastMonthFrom,t:lastMonthTo},
+  ].map(q=>`<button onclick="setQuickRange('${q.f}','${q.t}')" style="background:var(--t);color:var(--m);border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;">${q.l}</button>`).join('');
+  document.getElementById('ctFrom').value=ctFromISO||'';
+  document.getElementById('ctTo').value=ctToISO||'';
+  document.getElementById('ctFilterMod').classList.add('show');
+}
+function setQuickRange(f,t){document.getElementById('ctFrom').value=f;document.getElementById('ctTo').value=t;}
+function applyCTFilter(){
+  ctFromISO=document.getElementById('ctFrom').value;
+  ctToISO=document.getElementById('ctTo').value;
+  document.getElementById('ctFilterMod').classList.remove('show');
+  buildCT();
+}
+function clearCTFilter(){ctFromISO='';ctToISO='';document.getElementById('ctFilterMod').classList.remove('show');buildCT();}
+
+function buildCT(){
+  // Filter entries
+  let filtered=entries;
+  if(ctFromISO||ctToISO){
+    filtered=entries.filter(e=>{
+      if(!e.dateISO)return true;
+      if(ctFromISO&&e.dateISO<ctFromISO)return false;
+      if(ctToISO&&e.dateISO>ctToISO)return false;
+      return true;
+    });
+  }
+  // Label
+  const lbl=document.getElementById('ctRangeLabel');
+  if(ctFromISO||ctToISO){
+    const f=ctFromISO?fmtD(ctFromISO):'Start';
+    const t=ctToISO?fmtD(ctToISO):'Today';
+    if(lbl)lbl.textContent=f+' → '+t+' • '+filtered.length+' entries';
+  }else{
+    if(lbl)lbl.textContent='All entries • '+entries.length+' total';
+  }
+  // Compute totals for filtered
+  const ft={feed:0,health:0,diesel:0,elec:0,labour:0,maint:0,others:0};
+  filtered.forEach(e=>{if(ft[e.cat]!==undefined)ft[e.cat]+=e.val;});
+  const ftTotal=Object.values(ft).reduce((s,v)=>s+v,0);
+  function cEl(id,v,col){const el=document.getElementById(id);if(el){if(v>0){el.style.color=col||'#fff';el.textContent=fmt(v);}else{el.style.color='#ccc';el.textContent='--';}}}
+  cEl('ctTotal',ftTotal,'var(--m)');cEl('ctFeed',ft.feed);cEl('ctHealth',ft.health);cEl('ctDiesel',ft.diesel,'var(--o)');cEl('ctElec',ft.elec);
+  const cats=[
+    {key:'feed',label:'Feed',ico:'🌾',bg:'#E8F7F5',total:ft.feed},
+    {key:'health',label:'Healthcare',ico:'💊',bg:'#F3EEF8',total:ft.health},
+    {key:'diesel',label:'Diesel',ico:'⛽',bg:'#FFF0E8',total:ft.diesel},
+    {key:'elec',label:'Electricity',ico:'⚡',bg:'#E8F7F5',total:ft.elec},
+    {key:'labour',label:'Labour',ico:'👷',bg:'#EAF2FB',total:ft.labour},
+    {key:'maint',label:'Maintenance',ico:'🔧',bg:'#E8F5E9',total:ft.maint},
+    {key:'others',label:'Others',ico:'📦',bg:'#F5F5F5',total:ft.others},
+  ].filter(c=>c.total>0);
+  const el=document.getElementById('ctList');
+  if(!cats.length){el.innerHTML=`<div style="text-align:center;padding:30px 0;"><div style="font-size:40px;margin-bottom:10px;">📊</div><p style="font-size:14px;font-weight:600;color:#aaa;">${ctFromISO||ctToISO?'No entries in selected range':'No entries yet'}</p></div>`;return;}
+  el.innerHTML=cats.map((c,ci)=>{
+    const ce=filtered.filter(e=>e.cat===c.key);
+    return`<div style="background:#fff;border-radius:16px;border:1px solid var(--bd);margin-bottom:12px;overflow:hidden;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;" onclick="togCT(${ci})">
+      <div style="display:flex;align-items:center;gap:14px;"><div style="width:42px;height:42px;background:${c.bg};border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${c.ico}</div><div><p style="font-size:15px;font-weight:700;color:var(--tx);">${c.label}</p><p style="font-size:12px;color:#aaa;">${ce.length} entries</p></div></div>
+      <div style="display:flex;align-items:center;gap:10px;"><p style="font-size:15px;font-weight:800;color:var(--m);">${fmt(c.total)}</p><svg id="cv${ci}" width="18" height="18" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;flex-shrink:0;"><path d="M6 9l6 6 6-6" stroke="#aaa" stroke-width="2" stroke-linecap="round"/></svg></div>
+    </div>
+    <div id="cs${ci}" style="display:none;padding:0 18px 16px;border-top:1px solid #F5F7FA;">
+      <div style="display:grid;grid-template-columns:80px 1fr 80px;gap:6px;padding:8px 0;border-bottom:1px solid #F0F4F8;margin-bottom:4px;"><span style="font-size:11px;color:#aaa;">Date</span><span style="font-size:11px;color:#aaa;">Qty</span><span style="font-size:11px;color:#aaa;text-align:right;">Amount</span></div>
+      ${ce.map(e=>`<div style="display:grid;grid-template-columns:80px 1fr 80px;gap:6px;padding:7px 0;border-bottom:.5px solid #F8F8F8;"><span style="font-size:12px;color:#aaa;">${e.date}</span><span style="font-size:12px;color:var(--tx);">${e.qty||'--'}</span><span style="font-size:12px;font-weight:600;color:var(--tx);text-align:right;">${fmt(e.val)}</span></div>`).join('')}
+      <div style="display:flex;justify-content:space-between;padding-top:10px;"><span style="font-size:13px;font-weight:700;color:var(--m);">Total</span><span style="font-size:13px;font-weight:800;color:var(--m);">${fmt(c.total)}</span></div>
+    </div></div>`;
+  }).join('');
+}
+function togCT(i){const s=document.getElementById('cs'+i),c=document.getElementById('cv'+i);const o=s.style.display==='block';s.style.display=o?'none':'block';c.style.transform=o?'':'rotate(180deg)';}
+
+// ── FARM MANAGEMENT ──
+function getPondFeedUsed(i){return getCDPond(i).feedLogs.reduce((s,l)=>s+l.kg,0)/1000;}
+function getPondBiomass(i){
+  const cd=getCDPond(i),p=ponds[i];
+  if(!cd.growthLogs.length)return null;
+  const lastG=cd.growthLogs[0];
+  const seeds=parseInt((p.seeds||'0').replace(/,/g,''))||0;
+  // 90% survival rate applied to seeds
+  if(seeds>0&&lastG.avg>0)return parseFloat((seeds*0.9*lastG.avg/1000000).toFixed(2));
+  return null;
+}
+function togPond(i){ponds[i].on=!ponds[i].on;editPond=-1;buildFarm();}
+function openEdit(i){editPond=editPond===i?-1:i;buildFarm();}
+function saveEdit(i){
+  const d=document.getElementById('ep_d_'+i)?.value,a=document.getElementById('ep_a_'+i)?.value,s=document.getElementById('ep_s_'+i)?.value;
+  if(d){ponds[i].rawDate=d;ponds[i].date=fmtD(d);ponds[i].doc=calcDOC(d);}
+  if(a)ponds[i].acres=a;
+  if(s){const n=parseInt(s.replace(/,/g,''));ponds[i].seeds=n.toLocaleString('en-IN');ponds[i].density=ponds[i].acres?Math.round(n/(parseFloat(ponds[i].acres)*4047))+'/m²':'--';}
+  editPond=-1;buildFarm();toast('✓ '+ponds[i].name+' saved!');
+}
+function setHarvestDate(i,val){if(val){ponds[i].harvest=fmtD(val);ponds[i].on=false;buildFarm();toast('✓ Harvest set — '+ponds[i].name+' turned OFF');}}
+function epDOC(i){const d=document.getElementById('ep_d_'+i)?.value;const el=document.getElementById('ep_dv_'+i);if(d&&el)el.textContent=calcDOC(d)+' days';}
+function addPond(){ponds.push({name:'Pond '+(ponds.length+1),acres:'',on:true,rawDate:'',date:'',seeds:'',density:'',doc:0,harvest:''});buildFarm();toast('✓ Pond '+ponds.length+' added!');}
+function buildFarm(){
+  const el=document.getElementById('farmCards');if(!el)return;
+  const active=ponds.filter(p=>p.on).length;
+  document.getElementById('fmLoc').textContent=(APP.name?APP.name+"'s Farm":'My Farm')+(APP.loc?' • '+APP.loc:'');
+  const docs=ponds.filter(p=>p.on&&p.doc>0).map(p=>p.doc);
+  const totalSeeds=ponds.reduce((s,p)=>{const n=parseInt((p.seeds||'0').replace(/,/g,''))||0;return s+n;},0);
+  const totalFeedUsedMT=ponds.reduce((s,_,i)=>s+getPondFeedUsed(i),0);
+  let totalBio=0;ponds.forEach((_,i)=>{const b=getPondBiomass(i);if(b)totalBio+=b;});
+  document.getElementById('fmSum').innerHTML=`
+    <div class="s6c"><p style="font-size:13px;font-weight:800;color:#fff;">${active}</p><p style="font-size:7px;color:rgba(255,255,255,.4);line-height:1.4;margin-top:1px;">Active<br>Ponds</p></div>
+    <div class="s6c"><p style="font-size:13px;font-weight:800;color:#fff;">${ponds.length-active}</p><p style="font-size:7px;color:rgba(255,255,255,.4);line-height:1.4;margin-top:1px;">Inactive<br>Ponds</p></div>
+    <div class="s6c"><p style="font-size:11px;font-weight:800;color:var(--o);">${docs.length?Math.min(...docs)+'–'+Math.max(...docs):'--'}</p><p style="font-size:7px;color:rgba(255,255,255,.4);line-height:1.4;margin-top:1px;">DOC Range</p></div>
+    <div class="s6c"><p style="font-size:11px;font-weight:800;color:var(--m);">${totalFeedUsedMT>0?totalFeedUsedMT.toFixed(2)+'T':'--'}</p><p style="font-size:7px;color:rgba(255,255,255,.4);line-height:1.4;margin-top:1px;">Feed<br>Used</p></div>
+    <div class="s6c"><p style="font-size:11px;font-weight:800;color:#fff;">${totalBio>0?totalBio.toFixed(2)+'T':'--'}</p><p style="font-size:7px;color:rgba(255,255,255,.4);line-height:1.4;margin-top:1px;">Biomass<br>(90%)</p></div>
+    <div class="s6c" style="border-right:none;"><p style="font-size:10px;font-weight:800;color:#C39BD3;">${totalSeeds>0?totalSeeds.toLocaleString('en-IN'):'--'}</p><p style="font-size:7px;color:rgba(255,255,255,.4);line-height:1.4;margin-top:1px;">Seeds<br>Stocked</p></div>`;
+  el.innerHTML=ponds.map((p,i)=>{
+    const feedMT=getPondFeedUsed(i),bioT=getPondBiomass(i);
+    return`<div style="background:#fff;border-radius:18px;margin-bottom:14px;overflow:hidden;border:1px solid var(--bd);box-shadow:0 2px 8px rgba(0,0,0,.04);">
+    <div style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:48px;height:48px;border-radius:14px;background:var(--t);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${pIco()}</div>
+        <div><div style="display:flex;align-items:center;gap:8px;"><p style="font-size:16px;font-weight:800;color:var(--tx);">${p.name}</p>
+          <div onclick="openEdit(${i})" style="width:28px;height:28px;border-radius:8px;border:1.5px solid #E2E8F0;background:#F8FAFC;display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="#aaa" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#aaa" stroke-width="2" stroke-linecap="round"/></svg></div>
+        </div>
+        <p style="font-size:12px;color:#aaa;margin-top:3px;">${p.acres?p.acres+' Acres • ':''}<span style="color:${p.on?'#28C9BA':'#aaa'};font-weight:600;">${p.on?'Active':'Inactive'}</span></p></div>
+      </div>
+      <div onclick="togPond(${i})" class="tog" style="background:${p.on?'#28C9BA':'#CBD5E0'};"><div class="tgt" style="transform:translateX(${p.on?'30px':'0'});"></div><span class="tgl" style="${p.on?'left:8px':'right:7px'};color:${p.on?'var(--t)':'#fff'};">${p.on?'ON':'OFF'}</span></div>
+    </div>
+    ${editPond===i?`
+    <div style="padding:0 18px 18px;border-top:1px solid #F5F7FA;">
+      <div style="background:#E8F7F5;border:1px solid var(--m);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span>✏️</span><span style="font-size:13px;color:var(--tx);font-weight:600;">Edit stocking details for ${p.name}</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div class="fld ok" style="margin-bottom:0;"><div class="flb">📅 Stocking Date</div><input id="ep_d_${i}" class="fi" type="date" value="${p.rawDate}" oninput="epDOC(${i})" style="font-size:14px;"></div>
+        <div class="fld ok" style="margin-bottom:0;"><div class="flb">📐 Acres</div><div style="display:flex;align-items:center;gap:6px;"><input id="ep_a_${i}" class="fi" type="number" value="${p.acres}" step="0.1" placeholder="0.5"><span style="font-size:12px;color:#aaa;">ac</span></div></div>
+      </div>
+      <div style="background:#FFF3E0;border:1px solid var(--o);border-radius:10px;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-size:12px;color:var(--o);font-weight:600;">⏱ DOC Today</span><span id="ep_dv_${i}" style="font-size:14px;font-weight:800;color:var(--o);">${p.doc?p.doc+' days':'--'}</span></div>
+      <div class="fld ok" style="margin-bottom:14px;"><div class="flb">🐟 Total Seeds Stocked</div><input id="ep_s_${i}" class="fi" type="number" value="${p.seeds?p.seeds.replace(/,/g,''):''}" placeholder="e.g. 120000"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;background:#F0FAFA;border:1px solid var(--m);border-radius:12px;padding:12px 14px;margin-bottom:14px;"><div style="display:flex;align-items:center;gap:8px;"><span>${p.on?'🟢':'⚪'}</span><span style="font-size:13px;font-weight:600;color:var(--tx);">Status: <strong style="color:${p.on?'var(--m)':'#aaa'};">${p.on?'Active':'Inactive'}</strong></span></div><div onclick="togPond(${i})" class="tog" style="background:${p.on?'#28C9BA':'#CBD5E0'};width:54px;height:30px;"><div class="tgt" style="width:22px;height:22px;transform:translateX(${p.on?'24px':'0'});"></div><span class="tgl" style="${p.on?'left:7px':'right:6px'};font-size:9px;color:${p.on?'var(--t)':'#fff'};">${p.on?'ON':'OFF'}</span></div></div>
+      <div style="display:flex;gap:10px;"><button onclick="saveEdit(${i})" class="bor" style="flex:1;padding:14px;font-size:14px;">💾 Save</button><button onclick="openEdit(${i})" style="flex:1;background:#F0F4F8;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:600;color:#888;cursor:pointer;">Cancel</button></div>
+    </div>`:`
+    <div style="padding:0 18px 16px;">
+      ${p.date?`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #F5F7FA;border-bottom:1px solid #F5F7FA;margin-bottom:12px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--o);font-weight:600;">📅 ${p.date}</span>
+        ${p.seeds?`<span style="font-size:12px;color:var(--m);font-weight:600;">🐟 ${p.seeds} seeds</span>`:''}
+      </div>
+      <div class="s3">
+        <div class="sc"><p class="sv" style="color:var(--o);">${p.doc||'--'}</p><p class="sl">DOC</p></div>
+        <div class="sc"><p class="sv" style="color:var(--tx);font-size:13px;">${feedMT>0?feedMT.toFixed(2)+'T':'--'}</p><p class="sl">Feed Used</p></div>
+        <div class="sc"><p class="sv" style="color:var(--m);font-size:13px;">${bioT!==null?bioT+'T':'--'}</p><p class="sl">Biomass<br><span style="font-size:9px;color:#aaa;">(90% surv.)</span></p></div>
+      </div>`:`<div style="background:#F8FAFA;border-radius:12px;padding:14px;text-align:center;border-top:1px solid #F5F7FA;"><p style="font-size:12px;color:#aaa;">No stocking data yet</p><p style="font-size:11px;color:#ccc;margin-top:4px;">Tap ✏️ to add stocking details</p></div>`}
+      <div style="margin-top:12px;background:#FFFBF5;border:1px solid #FFE8D0;border-radius:12px;padding:11px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;font-weight:600;color:var(--o);">🌾 Harvest Date</span></div>
+          ${p.harvest?`<span style="font-size:13px;font-weight:700;color:var(--tx);">${p.harvest}</span>`:`<input type="date" onchange="setHarvestDate(${i},this.value)" style="border:none;background:transparent;font-size:12px;font-weight:600;color:#ccc;outline:none;cursor:pointer;">`}
+        </div>
+        ${!p.harvest?`<p style="font-size:11px;color:#aaa;margin-top:5px;">Set harvest date → pond turns OFF automatically</p>`:`<div style="display:flex;align-items:center;gap:5px;margin-top:5px;"><div style="width:6px;height:6px;border-radius:50%;background:#aaa;"></div><span style="font-size:11px;color:#aaa;">Pond turned OFF after harvest</span></div>`}
+      </div>
+    </div>`}
+  </div>`;
+  }).join('');
+}
+
+// ── PROFILE ──
+function buildProfile(){
+  document.getElementById('prName').textContent=APP.name||'--';
+  document.getElementById('prLoc').textContent='📍 '+(APP.loc||'--');
+  document.getElementById('vN').textContent=APP.name||'--';
+  document.getElementById('vL').textContent=APP.loc||'--';
+  document.getElementById('vMob').textContent=fmtMob(APP.mobile);
+  if(document.getElementById('eN'))document.getElementById('eN').value=APP.name||'';
+  if(document.getElementById('eL'))document.getElementById('eL').value=APP.loc||'';
+  buildPrPonds();
+}
+function toggleEdit(){const v=document.getElementById('vFarmer'),e=document.getElementById('eFarmer'),btn=document.getElementById('btnEF');const open=e.style.display==='block';v.style.display=open?'block':'none';e.style.display=open?'none':'block';btn.textContent=open?'Edit':'Cancel';}
+function saveFarmer(){const n=document.getElementById('eN').value.trim(),l=document.getElementById('eL').value.trim();if(!n){toast('⚠️ Name cannot be empty');return;}APP.name=n;APP.loc=l;document.getElementById('vN').textContent=n;document.getElementById('vL').textContent=l||'--';document.getElementById('prName').textContent=n;document.getElementById('prLoc').textContent='📍 '+l;toggleEdit();toast('✓ Profile saved!');}
+function buildPrPonds(){
+  const el=document.getElementById('prPonds');if(!el)return;
+  el.innerHTML=ponds.map((p,i)=>`
+  <div style="background:#fff;border-radius:16px;border:1px solid var(--bd);margin-bottom:12px;overflow:hidden;">
+    <div style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between;${profEditPond===i?'border-bottom:1px solid #F5F7FA;':''}">
+      <div style="display:flex;align-items:center;gap:12px;"><div style="width:42px;height:42px;border-radius:12px;background:var(--t);display:flex;align-items:center;justify-content:center;">${pIco()}</div><div><p style="font-size:15px;font-weight:800;color:var(--tx);">${p.name}</p><p style="font-size:12px;color:${p.on?'#28C9BA':'#aaa'};font-weight:600;">${p.on?'Active':'Inactive'}</p></div></div>
+      <button onclick="prToggle(${i})" style="background:#F0FAFA;border:1px solid var(--m);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--m);cursor:pointer;">${profEditPond===i?'Cancel':'Edit'}</button>
+    </div>
+    ${profEditPond===i?`
+    <div style="padding:14px 18px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div class="fld ok" style="margin-bottom:0;"><div class="flb">📅 Stocking Date</div><input id="pr_d_${i}" class="fi" type="date" value="${p.rawDate}" oninput="prDOC(${i})" style="font-size:13px;"></div>
+        <div class="fld ok" style="margin-bottom:0;"><div class="flb">📐 Acres</div><input id="pr_a_${i}" class="fi" type="number" value="${p.acres}" step="0.1" placeholder="0.5"></div>
+      </div>
+      <div class="fld ok" style="margin-bottom:10px;"><div class="flb">🐟 Seeds</div><input id="pr_s_${i}" class="fi" type="number" value="${p.seeds?p.seeds.replace(/,/g,''):''}" placeholder="e.g. 120000"></div>
+      <div style="background:#FFF3E0;border:1px solid var(--o);border-radius:10px;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-size:12px;color:var(--o);font-weight:600;">DOC Today</span><span id="pr_dv_${i}" style="font-size:14px;font-weight:800;color:var(--o);">${p.doc?p.doc+' days':'--'}</span></div>
+      <button onclick="prSave(${i})" class="bor" style="padding:13px;font-size:14px;">💾 Save ${p.name}</button>
+    </div>`:`
+    <div style="padding:10px 18px 14px;"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+      <div style="background:#F8FAFC;border-radius:10px;padding:10px 8px;text-align:center;"><p style="font-size:16px;font-weight:800;color:var(--o);">${p.doc||'--'}</p><p style="font-size:10px;color:#888;margin-top:3px;">DOC</p></div>
+      <div style="background:#F8FAFC;border-radius:10px;padding:10px 8px;text-align:center;"><p style="font-size:11px;font-weight:700;color:var(--o);">${p.date||'--'}</p><p style="font-size:10px;color:#888;margin-top:3px;">Stocked</p></div>
+      <div style="background:#F8FAFC;border-radius:10px;padding:10px 8px;text-align:center;"><p style="font-size:11px;font-weight:700;color:var(--m);">${p.seeds||'--'}</p><p style="font-size:10px;color:#888;margin-top:3px;">Seeds</p></div>
+    </div></div>`}
+  </div>`).join('');
+}
+function prToggle(i){profEditPond=profEditPond===i?-1:i;buildPrPonds();}
+function prDOC(i){const d=document.getElementById('pr_d_'+i)?.value;const el=document.getElementById('pr_dv_'+i);if(d&&el)el.textContent=calcDOC(d)+' days';}
+function prSave(i){
+  const d=document.getElementById('pr_d_'+i)?.value,a=document.getElementById('pr_a_'+i)?.value,s=document.getElementById('pr_s_'+i)?.value;
+  if(d){ponds[i].rawDate=d;ponds[i].date=fmtD(d);ponds[i].doc=calcDOC(d);}
+  if(a)ponds[i].acres=a;
+  if(s){const n=parseInt(s.replace(/,/g,''));ponds[i].seeds=n.toLocaleString('en-IN');ponds[i].density=ponds[i].acres?Math.round(n/(parseFloat(ponds[i].acres)*4047))+'/m²':'--';}
+  profEditPond=-1;buildPrPonds();buildFarm();toast('✓ '+ponds[i].name+' saved!');
+}
+
+// Close modals on backdrop tap
+document.getElementById('catDateMod').addEventListener('click',function(e){if(e.target===this)closeCatDateMod();});
+document.getElementById('ctFilterMod').addEventListener('click',function(e){if(e.target===this){document.getElementById('ctFilterMod').classList.remove('show');}});
+</script>
+</div>
+</body>
+</html>
